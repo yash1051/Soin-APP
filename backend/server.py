@@ -177,6 +177,7 @@ async def register(user_data: UserCreate):
     # Patients and admin are auto-approved
     if user_data.role in ["patient", "admin"]:
         doc['approval_status'] = "approved"
+        user_obj.approval_status = "approved"
     
     await db.users.insert_one(doc)
     
