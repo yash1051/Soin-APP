@@ -488,6 +488,7 @@ const PatientDashboard = ({ user, onLogout }) => {
         <DialogContent className="max-w-4xl" data-testid="image-zoom-dialog">
           <DialogHeader>
             <DialogTitle className="text-xl font-serif text-[#5D4E37]">Tongue Image</DialogTitle>
+            <DialogDescription>Full size view of the tongue image</DialogDescription>
           </DialogHeader>
           {selectedImage && (
             <img
