@@ -366,6 +366,7 @@ const PatientDashboard = ({ user, onLogout }) => {
         <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto" data-testid="history-dialog">
           <DialogHeader>
             <DialogTitle className="text-2xl font-serif text-[#5D4E37]">Submission History</DialogTitle>
+            <DialogDescription>View all your past submissions with complete details</DialogDescription>
           </DialogHeader>
           <div className="space-y-4 mt-4">
             {submissions.length === 0 ? (
