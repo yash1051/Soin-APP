@@ -22,21 +22,43 @@ import zipfile
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-# MongoDB connection
-mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
+# Import Vercel compatibility helpers
+try:
+    from vercel_compat import get_upload_directory, is_serverless, FILE_STORAGE_WARNING
+    UPLOADS_DIR = get_upload_directory()
+    IS_SERVERLESS = is_serverless()
+except ImportError:
+    # Fallback for local development without vercel_compat
+    UPLOADS_DIR = ROOT_DIR / 'uploads' / 'tongue_images'
+    UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
+    IS_SERVERLESS = False
+    FILE_STORAGE_WARNING = ""
+
+# MongoDB connection with serverless-friendly settings
+mongo_url = os.environ.get('MONGO_URL')
+if not mongo_url:
+    raise ValueError("MONGO_URL environment variable is required")
+
+# Optimize connection for serverless
+client = AsyncIOMotorClient(
+    mongo_url,
+    maxPoolSize=10 if not IS_SERVERLESS else 1,
+    minPoolSize=1,
+    maxIdleTimeMS=45000,
+    serverSelectionTimeoutMS=5000,
+)
+db = client[os.environ.get('DB_NAME', 'soin_healthcare')]
 
 # JWT Configuration
 SECRET_KEY = os.environ.get('SECRET_KEY', 'your-secret-key-change-in-production')
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7  # 7 days
 
-# Create uploads directory
-UPLOADS_DIR = ROOT_DIR / 'uploads' / 'tongue_images'
-UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
-
-app = FastAPI()
+app = FastAPI(
+    title="SOIN Healthcare API",
+    description="Diabetes management platform with tongue image analysis",
+    version="1.0.0"
+)
 api_router = APIRouter(prefix="/api")
 security = HTTPBearer()
 
