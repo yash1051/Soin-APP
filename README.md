@@ -113,7 +113,7 @@ yarn start
 
 ```
 Email: workwithgrover@gmail.com
-Password: win40xp
+Password: hjdkslhkfg
 ```
 
 ## 🛠️ Technology Stack
