@@ -160,9 +160,9 @@ async def require_role(user: dict, allowed_roles: List[str]):
     if user["role"] == "doctor" and user.get("approval_status") != "approved":
         raise HTTPException(status_code=403, detail="Your account is pending approval")
 
-# Initialize admin account
-@app.on_event("startup")
-async def create_admin():
+# Initialize admin account - works in both serverless and traditional environments
+async def ensure_admin_exists():
+    """Ensure admin account exists - called on-demand instead of startup"""
     admin_email = "workwithgrover@gmail.com"
     existing_admin = await db.users.find_one({"email": admin_email})
     if not existing_admin:
@@ -176,7 +176,29 @@ async def create_admin():
             "created_at": datetime.now(timezone.utc).isoformat()
         }
         await db.users.insert_one(admin_user)
-        logger.info("Admin account created")
+        logging.info("Admin account created")
+        return True
+    return False
+
+# Health check endpoint that also ensures admin exists
+@api_router.get("/health")
+async def health_check():
+    """Health check endpoint - also ensures admin account exists"""
+    try:
+        # Check database connection
+        await db.command('ping')
+        
+        # Ensure admin exists (first call will create it)
+        await ensure_admin_exists()
+        
+        return {
+            "status": "healthy",
+            "database": "connected",
+            "environment": "serverless" if IS_SERVERLESS else "local",
+            "storage_warning": FILE_STORAGE_WARNING if IS_SERVERLESS else None
+        }
+    except Exception as e:
+        raise HTTPException(status_code=503, detail=f"Service unavailable: {str(e)}")
 
 # Auth routes
 @api_router.post("/auth/register", response_model=TokenResponse)
