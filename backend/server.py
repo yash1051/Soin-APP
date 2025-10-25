@@ -465,20 +465,36 @@ async def get_stats(current_user: dict = Depends(get_current_user)):
 
 app.include_router(api_router)
 
+# Configure CORS
+cors_origins = os.environ.get('CORS_ORIGINS', '*')
+origins_list = [origin.strip() for origin in cors_origins.split(',')]
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
+    allow_origins=origins_list,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+# Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
 
-@app.on_event("shutdown")
-async def shutdown_db_client():
-    client.close()
+# Log environment info
+if IS_SERVERLESS:
+    logger.info("Running in SERVERLESS mode")
+    if FILE_STORAGE_WARNING:
+        logger.warning("File storage is ephemeral in serverless environment")
+else:
+    logger.info("Running in LOCAL mode")
+
+# Cleanup (for non-serverless environments)
+if not IS_SERVERLESS:
+    @app.on_event("shutdown")
+    async def shutdown_db_client():
+        client.close()
+        logger.info("Database connection closed")
