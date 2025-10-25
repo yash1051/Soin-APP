@@ -276,6 +276,10 @@ async def create_submission(
     notes: Optional[str] = Form(None),
     current_user: dict = Depends(get_current_user)
 ):
+    # Warning about serverless storage
+    if IS_SERVERLESS:
+        logging.warning("File uploaded in serverless environment - files will be lost after execution!")
+    
     # Save image
     file_ext = tongue_image.filename.split('.')[-1]
     file_name = f"{uuid.uuid4()}.{file_ext}"
