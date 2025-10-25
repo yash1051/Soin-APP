@@ -1,0 +1,66 @@
+# Vercel Ignore File
+# Files and directories to ignore during Vercel deployment
+
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+
+# Environment files (will be set in Vercel dashboard)
+.env
+.env.local
+.env.*.local
+
+# Testing
+tests/
+test_reports/
+*.test.js
+*.spec.js
+coverage/
+.pytest_cache/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Backend local files
+backend/uploads/
+*.db
+*.sqlite
+*.sqlite3
+
+# Git
+.git/
+.gitignore
+
+# Documentation
+README.md
+QUICK_START.md
+test_result.md
+
+# Scripts
+scripts/
+
+# Misc
+.emergent/
+*.bak
+*.tmp
