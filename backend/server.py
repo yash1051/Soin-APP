@@ -203,6 +203,9 @@ async def health_check():
 # Auth routes
 @api_router.post("/auth/register", response_model=TokenResponse)
 async def register(user_data: UserCreate):
+    # Ensure admin exists on first call
+    await ensure_admin_exists()
+    
     # Check if user exists
     existing_user = await db.users.find_one({"email": user_data.email})
     if existing_user:
