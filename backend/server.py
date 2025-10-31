@@ -38,5 +38,5 @@ async def health_check():
         media_type="application/json"
     )
 
-# Register router with app
-app.include_router(api_router, prefix="/api")
+# Register router with app (no prefix - vercel.json already handles /api routing)
+app.include_router(api_router)
