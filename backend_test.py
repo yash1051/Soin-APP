@@ -10,7 +10,7 @@ from io import BytesIO
 from PIL import Image
 
 class SOINHealthcareAPITester:
-    def __init__(self, base_url="https://diabetrac.preview.emergentagent.com/api"):
+    def __init__(self, base_url="https://deploy-wizard-35.preview.emergentagent.com/api"):
         self.base_url = base_url
         self.admin_token = None
         self.patient_token = None
