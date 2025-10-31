@@ -35,14 +35,5 @@
       "src": "/(.*)",
       "dest": "/frontend/build/index.html"
     }
-  ],
-  "env": {
-    "PYTHON_VERSION": "3.11"
-  },
-  "functions": {
-    "api/index.py": {
-      "maxDuration": 10,
-      "memory": 1024
-    }
-  }
+  ]
 }
