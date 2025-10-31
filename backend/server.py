@@ -37,3 +37,6 @@ async def health_check():
         },
         media_type="application/json"
     )
+
+# Register router with app
+app.include_router(api_router, prefix="/api")
