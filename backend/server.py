@@ -25,9 +25,9 @@ app.add_middleware(
 )
 
 # MongoDB connection
-MONGODB_URL = os.getenv("MONGODB_URL", "mongodb://localhost:27017")
+MONGO_URL = os.getenv("MONGO_URL", "mongodb://localhost:27017")
 try:
-    client = MongoClient(MONGODB_URL)
+    client = MongoClient(MONGO_URL)
     db = client["soin_healthcare"]
     users_collection = db["users"]
     # Test connection
